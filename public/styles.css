@@ -184,44 +184,6 @@ input[type="color"]::-webkit-color-swatch {
     transition: color 0.5s;
 }
 
-.headerMsg {
-    margin-left: 1rem;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    color:#000000;
-    transition: color 0.5s;
-    border-radius: 10px;
-    /* background-color: #b34646; */
-    /* position:fixed; */
-    /* height: 10%;
-    width: 70vw;
-    top: 8vh; */
-}
-
-/* #messages {
-    background-color: #191919;
-    height: 90%;
-    overflow-y: auto;
-    width: 100%;
-} */
-
-.headerUsers {
-    margin-left: 1rem;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    color:#000000;
-    transition: color 0.5s;
-    border-radius: 10px;
-}
-
-
-.headerDark {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    color:#ffffff;
-    transition: color 0.5s;
-}
-
 
 .userListBtn:hover {
     cursor: pointer;
@@ -302,6 +264,39 @@ input[type="color"]::-webkit-color-swatch {
     margin: 0;
     padding: 0;
 }
+
+
+.headerMsg {
+    margin-left: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    color:#000000;
+    transition: color 0.5s;
+    border-radius: 10px;
+    /* background-color: #b34646; */
+    /* position:fixed; */
+    /* height: 10%;
+    width: 70vw;
+    top: 8vh; */
+}
+
+.headerUsers {
+    margin-left: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    color:#000000;
+    transition: color 0.5s;
+    border-radius: 10px;
+}
+
+
+.headerDark {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    color:#ffffff;
+    transition: color 0.5s;
+}
+
 
 .usersListMobile {
     position: fixed; /* Sit on top of the page content */
@@ -388,6 +383,13 @@ input[type="color"]::-webkit-color-swatch {
     height: 40px;
     border-radius: 50%;
 }
+
+/* #messages {
+    background-color: #191919;
+    height: 90%;
+    overflow-y: auto;
+    width: 100%;
+} */
 
 .messagesList {
     background-color: #ffffff;
