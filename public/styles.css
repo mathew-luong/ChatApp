@@ -190,8 +190,8 @@ input[type="color"]::-webkit-color-swatch {
     padding-bottom: 1rem;
     color:#000000;
     transition: color 0.5s;
-    /* background-color: #b34646; */
     border-radius: 10px;
+    /* background-color: #b34646; */
     /* position:fixed; */
     /* height: 10%;
     width: 70vw;
