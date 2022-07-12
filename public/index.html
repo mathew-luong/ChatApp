@@ -28,30 +28,34 @@
     </div>
     <div class="chatContainer" id="chatContainer">
         <div id="messagesList" class="messagesList">
-            <h2 id="header1" class="header">Messages</h2>
+            <h2 id="header1" class="headerMsg">Messages</h2>
             <ul id="messages"></ul>
         </div>
         <div id="usersList" class="usersList">
-            <h2 id="header2" class="header">Users</h2>
+            <h2 id="header2" class="headerUsers">Users</h2>
             <ul id="users"></ul>
         </div>
     </div>
     <div class="bottomForm">
         <form id="form" action="">
-            <input id="input" class="input" autocomplete="off" placeholder="Type a message here..." onchange="sendTypingEvent()"/><button id="submitBtn" class="sendBtn"><i class="fas fa-paper-plane"></i></button>
+            <input id="input" class="input" autocomplete="off" placeholder="Type a message here..." onchange="sendTypingEvent()"/>
+            <button id="submitBtn" class="sendBtn"><i class="fas fa-paper-plane"></i></button>
         </form>
     </div>
-    <div id="loginPopup" class="loginContainer" aria-hidden="true">
-        <h2 class="loginLogo">ChatApp</h2>
-        <form class="loginForm">
-            <div>
-                <input id="loginInput" class="loginInput" autocomplete="off" placeholder="Enter a name"/>
-                <label id="colourLabel" for="loginColour"><br>Choose a colour</label>
-                <input type="color" id="loginColour" class="loginColour" value="#00E5A3">
-            </div>
-            <button id="loginBtn" class="loginButton" type="button">Chat</button>
-        </form>
+    <div id="loginWrapper">
+        <div id="loginPopup" class="loginContainer" aria-hidden="true">
+            <h2 class="loginLogo">ChatApp</h2>
+            <form class="loginForm">
+                <div>
+                    <input id="loginInput" class="loginInput" autocomplete="off" placeholder="Enter a name" maxlength="15"/>
+                    <label id="colourLabel" for="loginColour"><br>Choose a colour</label>
+                    <input type="color" id="loginColour" class="loginColour" value="#00E5A3">
+                </div>
+                <button id="loginBtn" class="loginButton" type="button">Chat</button>
+            </form>
+        </div>
     </div>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="chat.js"></script>
 </body>
