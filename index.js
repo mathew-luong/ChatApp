@@ -3,6 +3,8 @@
 // NOTE: the code below is modified from code found at: 
 // https://socket.io/get-started/chat/
 
+// SERVER SIDE --------------------------------------------
+
 const express = require('express');
 const app = express();
 const http = require('http');
@@ -45,21 +47,17 @@ io.on('connection', (socket) => {
         activeUsers.push(userObj);
         socket.broadcast.emit('new connection', userObj);
     });
-});
 
+    // broadcast typing event
+    socket.on('typing event', (name) => {
+        socket.broadcast.emit('typing event', name);
+    });
 
-// When a new user connects emit get message/user events
-// Client displays the past 200 messages and active users
-io.on('connection', (socket) => {
-    // send messages list to new user (on new connection)
-    io.to(socket.id).emit('get messages', messages);
-    // send list of all active users (on new connection)
-    io.to(socket.id).emit('get users', activeUsers);
-});
+    socket.on('typing stopped', (name) => {
+        socket.broadcast.emit('typing stopped', name);
+    });
 
-
-// when a client disconnects log it
-io.on('connection', (socket) => {
+    // disconnect event
     socket.on('disconnect', () => {
         console.log('-A User disconnected');
         var removedName;
@@ -76,12 +74,9 @@ io.on('connection', (socket) => {
         }
         // notify clients this user has disconnected
         io.emit('user disconnect',socketObj);
-        });
-});
+    });
 
-
-// Alert clients a user has changed their name
-io.on('connection', (socket) => {
+    // new name event
     socket.on('new name', (newObj) => {
         nameObj = {
             newName: newObj.newName,
@@ -96,12 +91,8 @@ io.on('connection', (socket) => {
         });
         socket.broadcast.emit('new name', nameObj);
     });
-});
 
-
-// broadcast chat message to all clients (except for sender)
-// LearnRPG: https://stackoverflow.com/questions/10058226/send-response-to-all-clients-except-sender
-io.on('connection', (socket) => {
+    // new message event
     socket.on('chat message', (msg) => {
         let msgObj = {
                 text: msg.text,
@@ -114,14 +105,19 @@ io.on('connection', (socket) => {
 
         socket.broadcast.emit('chat message', msgObj);
     });
+
 });
 
-// broadcast typing event 
+
+// When a new user connects emit get message/user events
+// Client displays the past 200 messages and active users
 io.on('connection', (socket) => {
-    socket.on('typing event', (name) => {
-        socket.broadcast.emit('typing event', name);
-    });
+    // send messages list to new user (on new connection)
+    io.to(socket.id).emit('get messages', messages);
+    // send list of all active users (on new connection)
+    io.to(socket.id).emit('get users', activeUsers);
 });
+
 
 
 // Only save last 200 messages 

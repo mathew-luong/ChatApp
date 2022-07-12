@@ -15,6 +15,9 @@ var input = document.getElementById('input');
 var loginInput = document.getElementById('loginInput');
 var mobileUserListbtn = document.getElementById("userListBtn");
 
+// Focuses on input when startup
+let currIn = loginInput.focus();
+
 // Array keeping track of all usernames in use
 var userNames = new Array();
 
@@ -29,13 +32,8 @@ const names = ["John", "Amanda", "Richard", "Mathew Luong", "Joe Mama",
 "Alexis","Jessica G", "Anne M", "Victor", "Nathan", "Evan", "Sophia", "Emma",
 "Amelia", "Isabella G", "Mia", "Ava L", "Eric Brown", "Barack", "Hugh J"]; 
 
-// Opens login prompt when a user first connects
-function openPopup() {
-    window.location.hash = 'loginPopup';
-}
 
-// When the window loads, login popup appears
-window.onload = openPopup;
+
 // Submit button on login popup
 loginButton.addEventListener("click" , closeLogin);
 
@@ -47,12 +45,8 @@ function closeLogin() {
         window.location.reload();
     }
     else {
-        window.location.hash = "";
-        loginContainer.style.display = "none";
-        loginContainer.style.visibility = "hidden";
-        form.style.visibility = "visible";
-        logo.style.visibility = "visible";
-        chatContainer.style.visibility = "visible";
+        // Fade the login page and display the chat page
+        $("#loginWrapper").fadeOut();
     }
 
     senderName = loginInput.value;
@@ -293,9 +287,6 @@ function newMessageAlert(str, colour) {
 function sendTypingEvent() {
     // sends a typing event to the server 
     console.log(senderName + " IS TYPING....");
-    // senderObj = {
-    //     sender: senderName,
-    // }
     socket.emit('typing event', senderName);
 }
 
@@ -311,6 +302,7 @@ socket.on('typing event', (name) => {
 // removes '<user> is typing... message
 socket.on('typing stopped',() => {
     // when client hits enter
+    
 });
 
 
