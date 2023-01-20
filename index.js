@@ -1,5 +1,3 @@
-// SENG 513 A2
-// By: Mathew Luong UCID: 30068650
 // NOTE: the code below is modified from code found at: 
 // https://socket.io/get-started/chat/
 

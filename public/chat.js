@@ -1,5 +1,3 @@
-// SENG 513 A2
-// By: Mathew Luong UCID: 30068650
 // NOTE: the code below is modified from code found at: 
 // https://socket.io/get-started/chat/
 
@@ -13,7 +11,9 @@ var logo = document.getElementById('logo');
 var loginContainer = document.getElementById('loginPopup');
 var input = document.getElementById('input');
 var loginInput = document.getElementById('loginInput');
+var loginInput2 = document.getElementById('loginInput2');
 var mobileUserListbtn = document.getElementById("userListBtn");
+const msgList = document.getElementById('messages');
 
 // Focuses on input when startup
 let currIn = loginInput.focus();
@@ -25,13 +25,7 @@ var time;
 var senderName;
 var senderColour;
 
-
-// List of nicknames (when user doesnt specify name they will be assigned one randomly)
-const names = ["John", "Amanda", "Richard", "Mathew Luong", "Joe Mama", 
-"Roger Federer", "Conor McGregor", "Robert M", "Sasha", "Kelly M",
-"Alexis","Jessica G", "Anne M", "Victor", "Nathan", "Evan", "Sophia", "Emma",
-"Amelia", "Isabella G", "Mia", "Ava L", "Eric Brown", "Barack", "Hugh J"]; 
-
+var colours = ["#00E5A3", "#4CBBE7", "#FDC5F5", "#FFC482", "#9439A9", "#F1D96C", "#FF0000"];
 
 
 // Submit button on login popup
@@ -40,8 +34,13 @@ loginButton.addEventListener("click" , closeLogin);
 
 function closeLogin() {
     // Check if username already in use
-    if(userNames.includes(loginInput.value)) {
+    let name = loginInput.value + " " + loginInput2.value
+    if(userNames.includes(name)) {
         alert("Nickname already in use, please select another name");
+        window.location.reload();
+    }
+    else if(loginInput.value == "") {
+        alert("Please enter a first name");
         window.location.reload();
     }
     else {
@@ -49,15 +48,11 @@ function closeLogin() {
         $("#loginWrapper").fadeOut();
     }
 
-    senderName = loginInput.value;
-    // Choose a random name
-    if(senderName == "") {
-        senderName = names[Math.floor(Math.random() * names.length)];
-        names.splice(names.indexOf(senderName),1);
-    }
+    senderName = name;
     userNames.push(senderName);
-    // Default colour is green
-    senderColour = document.getElementById("loginColour").value;
+    // Choose a random colour for the user
+    senderColour = colours[Math.floor(Math.random() * colours.length)];
+    colours.splice(colours.indexOf(senderColour),1);
 
     // notify server a new user has joined
     let newUser = {
@@ -161,6 +156,21 @@ socket.on('user disconnect', function(userId) {
 });
 
 
+// Handle typing event from server
+// Displays a message that specifies <user> is typing...
+socket.on('typing event', (name) => {
+    let str = name + " is typing...";
+    newMessageAlert(str);
+});
+
+// https://stackoverflow.com/questions/35120280/how-to-do-typing-and-stop-typing-in-socket-io-and-jquery-properly
+// removes '<user> is typing... message
+socket.on('typing stopped',(name) => {
+    // user stopped typing 
+    removeTypingAlert();
+});
+
+
 
 // LISTENERS ------------------------------------------------------------------------
 
@@ -196,7 +206,9 @@ function createMessageItem(msg, isSender) {
         msgText.textContent = msg.text;
     }
 
-    // Li consists of name • time /n message text
+    // Removes typing alert 
+    removeTypingAlert();
+
     item.appendChild(nameTime);
     item.appendChild(msgText);
     messages.appendChild(item);
@@ -206,6 +218,12 @@ function createMessageItem(msg, isSender) {
     items = document.querySelectorAll(text);
     last = items[items.length-1];
     last.scrollIntoView();
+
+}
+
+function getLastChild() {
+    let msgs = msgList.childNodes;
+    return msgList.lastChild;
 }
 
 // Creates a new user in users list
@@ -217,20 +235,24 @@ function createNewUser(user, isUser) {
     let icon = document.createElement('span');
     icon.className = "usersIcon";
     icon.style.backgroundColor = user.newUserColour;
+    let initials = user.newUserName.split(' ').map(function(item){return item[0]}).join('');
+
+    icon.textContent = initials;
     // a tag containing username 
     var userName = document.createElement('span');
     userName.className = "usersListName";
-    item.style.borderRight = "6px solid " + user.newUserColour;
+    // item.style.borderRight = "6px solid " + user.newUserColour;
     if(isUser != undefined) {
         userName.textContent = user.newUserName + " (You)";
     }
     else {
-        userName.textContent = user.newUserName;
+        userName.textContent = user.newUserName;        
     }
 
     // Li consists of icon followed by username
     item.appendChild(icon);
     item.appendChild(userName);
+
     users.appendChild(item);
 }
 
@@ -260,7 +282,6 @@ function changeNickname(newName) {
 }
 
 
-// Royi Namir: https://stackoverflow.com/questions/8027423/how-to-check-if-a-string-is-a-valid-hex-color-representation
 function changeColour(newColour) {
     // check if string is valid hexcolor
     let hex = /^#[0-9A-F]{6}$/i;
@@ -284,26 +305,42 @@ function newMessageAlert(str, colour) {
     newUser.scrollIntoView();
 }
 
+
+var typingTimeout = undefined;
+var isTyping = false;
+
+
+function timeoutFunction(){
+    isTyping = false;
+    socket.emit('typing stopped');
+  }
+  
+
 function sendTypingEvent() {
-    // sends a typing event to the server 
-    console.log(senderName + " IS TYPING....");
-    socket.emit('typing event', senderName);
+    // User was not typing before (new typing event)
+    if(isTyping == false) {
+        // sends a typing event to the server 
+        isTyping = true;
+        socket.emit('typing event', senderName);
+        typingTimeout = setTimeout(timeoutFunction, 5000);
+    }
+    // User resumes typing, clear the timeout
+    else {
+        clearTimeout(timeout);
+        timeout = setTimeout(timeoutFunction, 5000);
+    }
 }
 
-// Handle typing event from server
-// Displays a message that specifies <user> is typing...
-socket.on('typing event', (name) => {
-    let str = name + " is typing...";
-    console.log("RECEIVED TYPING EVENT, THIS IS WHO DID IT:" + name);
-    newMessageAlert(str);
-});
-
-// https://stackoverflow.com/questions/35120280/how-to-do-typing-and-stop-typing-in-socket-io-and-jquery-properly
-// removes '<user> is typing... message
-socket.on('typing stopped',() => {
-    // when client hits enter
-    
-});
+function removeTypingAlert() {
+    let msgs = msgList.childNodes;
+    for(i = 0; i < msgs.length; i++) {
+        // E.G. send typing stopped event when a user clicks enter
+        // removes "user is typing" alert 
+        if(msgs[i].textContent.includes(" is typing...") && msgs[i].className == "newUserLi") {
+            msgList.removeChild(msgs[i]);
+        }
+    }
+}
 
 
 // removes disconnected user from users list
@@ -321,15 +358,19 @@ function removeUser(userId) {
 function darkModeToggle() {
     let msgList = document.getElementById('messagesList');
     let userList = document.getElementById('usersList');
+    let userListNames = document.querySelectorAll('.usersListName');
     let input = document.getElementById('input');
     let body = document.getElementById('bodyLight');
     let header1 = document.getElementById('header1');
     let header2 = document.getElementById('header2');
     let btn1 = document.getElementById("darkModeBtn");
-    let btn2 = document.getElementById("submitBtn");
     let btn3 = document.getElementById("userListBtn");
     let logo = document.getElementById("chatLogo");
 
+
+    userListNames.forEach(el => {
+        el.classList.toggle('usersListNameDark');
+    })
     msgList.classList.toggle('messagesListDark');
     userList.classList.toggle('usersListDark');
     input.classList.toggle('inputDark');
@@ -337,7 +378,6 @@ function darkModeToggle() {
     header1.classList.toggle('headerDark');
     header2.classList.toggle('headerDark');
     btn1.classList.toggle('darkModeBtnDark');
-    btn2.classList.toggle('sendBtnDark');
     btn3.classList.toggle('darkModeBtnDark');
     logo.classList.toggle('chatLogoDark');
 }
@@ -350,21 +390,6 @@ function displayUserList() {
     clone.className = "usersListMobile";
     let btn = document.getElementById("userListBtn");
 
-    // if(clone.style.display == "block" || mobileList) {
-    //     console.log("CHANGED TO NONE");
-    //     btn.style.backgroundColor = "#202423";
-    //     document.body.removeChild(clone);
-    //     clone.style.display = "none";
-    //     mobileList = false;
-    // }
-    // else {
-    //     console.log("BEFORE: " + clone.style.display);
-    //     document.body.appendChild(clone);
-    //     clone.style.display = "block";
-    //     console.log("AFTER: " + clone.style.display);
-    //     btn.style.backgroundColor = "#00E5A3";
-    //     mobileList = true;
-    // }
 
     if(list.style.display === "block") {
         btn.style.backgroundColor = "#202423";

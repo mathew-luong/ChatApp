@@ -28,11 +28,13 @@
     </div>
     <div class="chatContainer" id="chatContainer">
         <div id="messagesList" class="messagesList">
-            <h2 id="header1" class="headerMsg">Messages</h2>
+            <h2 id="header1" class="headerMsgs">Messages</h2>
             <ul id="messages"></ul>
         </div>
         <div id="usersList" class="usersList">
-            <h2 id="header2" class="headerUsers">Users</h2>
+            <div class="headerDiv"> 
+                <h2 id="header2" class="headerUsers">Users</h2>
+            </div>
             <ul id="users"></ul>
         </div>
     </div>
@@ -46,11 +48,12 @@
         <div id="loginPopup" class="loginContainer" aria-hidden="true">
             <h2 class="loginLogo">ChatApp</h2>
             <form class="loginForm">
-                <div>
-                    <input id="loginInput" class="loginInput" autocomplete="off" placeholder="Enter a name" maxlength="15"/>
-                    <label id="colourLabel" for="loginColour"><br>Choose a colour</label>
-                    <input type="color" id="loginColour" class="loginColour" value="#00E5A3">
-                </div>
+                <label id="colourLabel" for="loginInput"><br>First name</label>
+                <input id="loginInput" class="loginInput" autocomplete="off" placeholder="Type your first name" maxlength="15"/>
+                <!-- <label id="colourLabel" for="loginColour"><br>Choose a colour</label>
+                <input type="color" id="loginColour" class="loginColour" value="#00E5A3"> -->
+                <label id="colourLabel" for="loginInput"><br>Last name</label>
+                <input id="loginInput2" class="loginInput" autocomplete="off" placeholder="Type your last name (optional)" maxlength="15"/>
                 <button id="loginBtn" class="loginButton" type="button">Chat</button>
             </form>
         </div>
